@@ -1,4 +1,2 @@
 streamlit
-langchain
-langchain-google-genai>=1.0.3
-langchain-core
+google-generativeai
