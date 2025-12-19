@@ -1,7 +1,6 @@
 import streamlit as st
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
+import google.generativeai as genai
+import os
 
 # --- SAYFA AYARLARI ---
 st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon="🛡️", layout="wide")
@@ -12,9 +11,13 @@ with st.sidebar:
     st.title("DexApt Intelligence")
     st.markdown("### Google Gemini Power 🚀")
     
-    # API Key Girişi
-    api_key = st.text_input("Google API Key:", type="password", placeholder="AIzaSy...")
-    
+    # API Anahtarı Yönetimi
+    if "GOOGLE_API_KEY" in st.secrets:
+        api_key = st.secrets["GOOGLE_API_KEY"]
+        st.success("✅ Sistem Bağlı (Auto)")
+    else:
+        api_key = st.text_input("Google API Key:", type="password", placeholder="AIzaSy...")
+        
     st.markdown("---")
     
     brand_persona = st.selectbox(
@@ -36,50 +39,54 @@ col1, col2 = st.columns([1, 1])
 
 with col1:
     st.subheader("📡 Gelen Veri (Müşteri Şikayeti)")
-    default_text = "Sipariş vereli 2 saat oldu! Yemek buz gibi geldi, kuryeniz de suratıma bakıp gitti. Bu ne rezillik? Paramı hemen iade edin yoksa sizi her yere şikayet edeceğim! 😡"
+    default_text = "Hizmetinizi satın aldım ancak 6 saattir ne telefonumu açıyorsunuz ne mesajıma dönüyorsunuz bu ne rezillik sizi en üst makama şikayet edip sürüm sürüm süründüreceğim"
     user_comment = st.text_area("Mesajı Analiz Et:", value=default_text, height=200)
     
     analyze_btn = st.button("RİSK VE STRATEJİ ANALİZİ BAŞLAT", type="primary")
 
-# --- GELİŞMİŞ AI FONKSİYONU ---
+# --- SAFKAN GOOGLE AI FONKSİYONU ---
 def get_ai_response(comment, persona, key):
     if not key:
-        return "⚠️ Lütfen sol menüden API Anahtarınızı giriniz."
+        return "⚠️ Lütfen API Anahtarı giriniz."
     
-    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=key, temperature=0.5)
-    
-    # PROMPT DEĞİŞTİ: Artık analiz ve plan istiyoruz
-    template = """
-    Sen DexApt tarafından geliştirilmiş üst düzey bir Kriz Yönetimi Uzmanısın.
-    
-    GÖREV:
-    Aşağıdaki müşteri şikayetini analiz et ve işletme sahibine rapor sun.
-    
-    BAĞLAM:
-    Marka Tipi: {persona}
-    Müşteri Şikayeti: {comment}
-    
-    İSTENEN RAPOR FORMATI (Markdown Kullan):
-    
-    ### 📊 1. RİSK ANALİZİ
-    * **Öfke Skoru:** [1'den 10'a kadar bir sayı ver] / 10
-    * **Tespit:** [Müşterinin asıl derdi ne? Kısaca yaz]
-    * **Potansiyel Tehlike:** [Bu yorum viral olur mu? Markaya zarar verir mi?]
-    
-    ### 🛠️ 2. OPERASYONEL ÇÖZÜM PLANI (Yönetici İçin)
-    İşletmenin bu sorunu kökten çözmesi için yapması gereken 3 somut adımı maddeler halinde yaz. (Örn: "Kurye ile görüş", "Kamera kaydına bak" vb.)
-    1. ...
-    2. ...
-    3. ...
-    
-    ### 💬 3. ÖNERİLEN YANIT TASLAĞI
-    Markanın diline ({persona}) uygun, müşteriyi sakinleştiren ve çözüme yönlendiren nihai cevap metni.
-    """
-    
-    prompt = ChatPromptTemplate.from_template(template)
-    chain = prompt | llm | StrOutputParser()
-    
-    return chain.invoke({"persona": persona, "comment": comment})
+    # 1. Google'ı Yapılandır
+    try:
+        genai.configure(api_key=key)
+        # Model olarak 'gemini-pro' veya 'gemini-1.5-flash' kullanabilirsin. 
+        # Pro en kararlısıdır.
+        model = genai.GenerativeModel('gemini-pro')
+        
+        # 2. Prompt Hazırla
+        prompt = f"""
+        Sen DexApt Kriz Yönetimi Uzmanısın.
+        
+        DURUM:
+        Marka Tipi: {persona}
+        Müşteri Şikayeti: {comment}
+        
+        GÖREV:
+        Aşağıdaki formatta bir rapor hazırla (Markdown kullan):
+        
+        ### 📊 1. RİSK ANALİZİ
+        * **Öfke Skoru:** [1-10 Arası Puan] / 10
+        * **Tespit:** [Kısa durum özeti]
+        
+        ### 🛠️ 2. OPERASYONEL ÇÖZÜM (Yöneticiye)
+        İşletme sahibinin yapması gereken 3 adım:
+        1. ...
+        2. ...
+        3. ...
+        
+        ### 💬 3. ÖNERİLEN YANIT (Müşteriye)
+        Marka diline ({persona}) uygun, nazik ve çözüm odaklı yanıt metni.
+        """
+        
+        # 3. İsteği Gönder
+        response = model.generate_content(prompt)
+        return response.text
+        
+    except Exception as e:
+        return f"Hata oluştu: {str(e)}"
 
 # --- SONUÇ EKRANI ---
 with col2:
@@ -87,14 +94,16 @@ with col2:
     
     if analyze_btn:
         if not api_key:
-            st.error("⚠️ Sol tarafa API Key girilmeli!")
+            st.error("⚠️ API Key eksik!")
         else:
-            with st.spinner('Öfke seviyesi ölçülüyor ve aksiyon planı hazırlanıyor...'):
-                try:
-                    result = get_ai_response(user_comment, brand_persona, api_key)
+            with st.spinner('DexApt sunuculara bağlanıyor...'):
+                result = get_ai_response(user_comment, brand_persona, api_key)
+                
+                # Eğer hata mesajı geldiyse kırmızı göster
+                if "Hata oluştu" in result:
+                    st.error(result)
+                else:
                     st.markdown(result)
-                    st.success("Rapor başarıyla oluşturuldu.")
-                except Exception as e:
-                    st.error(f"Hata: {e}")
+                    st.success("Rapor tamamlandı.")
 
 st.markdown("---")
