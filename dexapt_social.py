@@ -6,6 +6,22 @@ LOGO_URL = ""
 # --- SAYFA AYARLARI ---
 st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon="🛡️", layout="wide")
 
+st.markdown(
+    """
+    <style>
+    /* Yan Menü Arka Planını Siyah Yap */
+    [data-testid="stSidebar"] {
+        background-color: #000000;
+    }
+    /* Yan Menüdeki Yazıları Beyaz/Gri Yap (Okunabilirlik İçin) */
+    [data-testid="stSidebar"] .css-1d391kg {
+        color: #ffffff;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # --- YAN MENÜ ---
 with st.sidebar:
     try:
