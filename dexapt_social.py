@@ -2,12 +2,13 @@ import streamlit as st
 import google.generativeai as genai
 import os
 
+LOGO_URL = "https://media.licdn.com/dms/image/v2/D4D0BAQHoz_rIDsxi-g/company-logo_100_100/B4DZsjtD8ZJIAQ-/0/1765830574855/dexapt_logo?e=1767830400&v=beta&t=jezcuAIDhug0xmmGJb-FTX5K8PJf6B3Zq7XHn3J_NUQ"
 # --- SAYFA AYARLARI ---
-st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon="🛡️", layout="wide")
+st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon=LOGO_URL, layout="wide")
 
 # --- YAN MENÜ ---
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/4712/4712009.png", width=80) 
+    st.image(LOGO_URL, width=120) 
     st.title("DexApt Intelligence")
     st.markdown("### Google Gemini Power 🚀")
     
