@@ -46,7 +46,7 @@ def get_ai_response(comment, persona, key):
     if not key:
         return "⚠️ Lütfen sol menüden API Anahtarınızı giriniz."
     
-    llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=key, temperature=0.5)
+    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=key, temperature=0.5)
     
     # PROMPT DEĞİŞTİ: Artık analiz ve plan istiyoruz
     template = """
