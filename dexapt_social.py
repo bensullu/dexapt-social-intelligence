@@ -20,8 +20,7 @@ with st.sidebar:
         
     st.markdown("---")
     
-    # --- AKILLI PERSONA SİSTEMİ (VİTRİN TÜRKÇE, DEPO İNGİLİZCE) ---
-    # GÜNCELLEME: "Geeky" ifadesini kaldırdık, "Professional" ekledik.
+    # --- AKILLI PERSONA SİSTEMİ ---
     persona_map = {
         "Zincir Restoran (Kurumsal ama Samimi)": "Chain Restaurant (Corporate but Friendly, Welcoming, sincere)",
         "Lüks Giyim Markası (Mesafeli ve Seçkin)": "Luxury Fashion Brand (High-end, Exclusive, Professional, Distant and Elite)",
@@ -62,7 +61,7 @@ def get_ai_response(comment, persona, key):
         
         model = genai.GenerativeModel('models/gemini-flash-latest')
         
-        # PROMPT GÜNCELLEMESİ: Plaza Dili Yasağı Eklendi
+        # PROMPT GÜNCELLEMESİ: Kısaltma Yasağı Eklendi
         prompt = f"""
         You are a Senior Crisis Management Expert developed by DexApt.
         
@@ -75,7 +74,8 @@ def get_ai_response(comment, persona, key):
         
         CRITICAL RULES: 
         1. **THE FINAL OUTPUT MUST BE STRICTLY IN TURKISH.**
-        2. **NO 'PLAZA LANGUAGE':** Do not mix English words into Turkish sentences (e.g., do NOT use words like 'Latency', 'Bottleneck', 'Uplink', 'Post-purchase' inside the Turkish text). Translate technical terms into professional Turkish (e.g., use 'Gecikme' instead of 'Latency').
+        2. **NO 'PLAZA LANGUAGE':** Do not mix English words into Turkish sentences. Translate technical terms into professional Turkish.
+        3. **NO UNNECESSARY ABBREVIATIONS:** Do not use obscure acronyms (like MTTR, RCA) without explanation. Keep it clear.
         
         OUTPUT FORMAT (Use Markdown):
         
@@ -86,7 +86,7 @@ def get_ai_response(comment, persona, key):
         
         ### 🛠️ 2. OPERASYONEL ÇÖZÜM (OPERATIONAL PLAN)
         List 3 concrete, actionable steps the business owner must take internally.
-        1. [Step 1 in Turkish - Use technical concepts but Turkish names]
+        1. [Step 1 in Turkish - Clear professional language]
         2. [Step 2 in Turkish]
         3. [Step 3 in Turkish]
         
@@ -94,7 +94,7 @@ def get_ai_response(comment, persona, key):
         Write a reply to the customer.
         - Tone: Must match the '{persona}' strictly.
         - Content: Apologetic but professional, solution-oriented.
-        - Language: Pure, Professional Turkish (No English jargon).
+        - Language: Pure, Professional Turkish (No English jargon), No unnecessary technical abbreviations.
         """
         
         response = model.generate_content(prompt)
