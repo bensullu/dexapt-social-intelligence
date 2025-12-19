@@ -30,26 +30,7 @@ with st.sidebar:
         )
     )
     
-    # --- YENİ EKLENEN DEBUG BÖLÜMÜ ---
-    st.markdown("---")
-    st.markdown("🔧 **Teknik Kontrol**")
-    if st.button("Mevcut Modelleri Listele"):
-        if not api_key:
-            st.error("Önce API Key girilmelidir!")
-        else:
-            try:
-                genai.configure(api_key=api_key)
-                models = genai.list_models()
-                found = False
-                st.info("Bulunan Modeller:")
-                for m in models:
-                    if 'generateContent' in m.supported_generation_methods:
-                        st.code(m.name)
-                        found = True
-                if not found:
-                    st.warning("Hiçbir model bulunamadı.")
-            except Exception as e:
-                st.error(f"Hata Detayı: {e}")
+    st.info("Model: Gemini 2.0 Flash ⚡")
 
 # --- ANA EKRAN ---
 st.title("🛡️ DexApt: Sosyal Medya Kriz Analisti")
@@ -73,9 +54,8 @@ def get_ai_response(comment, persona, key):
     try:
         genai.configure(api_key=key)
         
-        # BURASI KRİTİK: Listeden bulduğun ismi buraya yazacağız.
-        # Şimdilik en genel geçer modeli deniyoruz.
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # İŞTE BURASI! Senin listendeki çalışan modeli yazdık.
+        model = genai.GenerativeModel('models/gemini-2.0-flash')
         
         prompt = f"""
         Sen DexApt Kriz Yönetimi Uzmanısın.
