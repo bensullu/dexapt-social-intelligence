@@ -9,13 +9,18 @@ st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon="🛡️
 st.markdown(
     """
     <style>
-    /* Yan Menü Arka Planını Siyah Yap */
+    /* Yan Menü Arka Planı: Modern Koyu Antrasit */
     [data-testid="stSidebar"] {
-        background-color: #000000;
+        background-color: #1A1C24;
+        border-right: 1px solid #2D2F3B; /* İnce bir ayırıcı çizgi ekledik */
     }
-    /* Yan Menüdeki Yazıları Beyaz/Gri Yap (Okunabilirlik İçin) */
+    /* Yan Menüdeki Yazı Renkleri */
     [data-testid="stSidebar"] .css-1d391kg {
-        color: #ffffff;
+        color: #E0E0E0;
+    }
+    /* Başlık ve Metinleri Biraz Daha Okunaklı Yapalım */
+    h1, h2, h3 {
+        font-family: 'Helvetica Neue', sans-serif;
     }
     </style>
     """,
