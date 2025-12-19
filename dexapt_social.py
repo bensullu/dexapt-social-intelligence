@@ -29,6 +29,27 @@ with st.sidebar:
             "Hava Yolu Şirketi (Otoriter & Güven Verici)"
         )
     )
+    
+    # --- YENİ EKLENEN DEBUG BÖLÜMÜ ---
+    st.markdown("---")
+    st.markdown("🔧 **Teknik Kontrol**")
+    if st.button("Mevcut Modelleri Listele"):
+        if not api_key:
+            st.error("Önce API Key girilmelidir!")
+        else:
+            try:
+                genai.configure(api_key=api_key)
+                models = genai.list_models()
+                found = False
+                st.info("Bulunan Modeller:")
+                for m in models:
+                    if 'generateContent' in m.supported_generation_methods:
+                        st.code(m.name)
+                        found = True
+                if not found:
+                    st.warning("Hiçbir model bulunamadı.")
+            except Exception as e:
+                st.error(f"Hata Detayı: {e}")
 
 # --- ANA EKRAN ---
 st.title("🛡️ DexApt: Sosyal Medya Kriz Analisti")
@@ -49,14 +70,13 @@ def get_ai_response(comment, persona, key):
     if not key:
         return "⚠️ Lütfen API Anahtarı giriniz."
     
-    # 1. Google'ı Yapılandır
     try:
         genai.configure(api_key=key)
-        # Model olarak 'gemini-pro' veya 'gemini-1.5-flash' kullanabilirsin. 
-        # Pro en kararlısıdır.
-        model = genai.GenerativeModel('gemini-pro')
         
-        # 2. Prompt Hazırla
+        # BURASI KRİTİK: Listeden bulduğun ismi buraya yazacağız.
+        # Şimdilik en genel geçer modeli deniyoruz.
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
         prompt = f"""
         Sen DexApt Kriz Yönetimi Uzmanısın.
         
@@ -81,7 +101,6 @@ def get_ai_response(comment, persona, key):
         Marka diline ({persona}) uygun, nazik ve çözüm odaklı yanıt metni.
         """
         
-        # 3. İsteği Gönder
         response = model.generate_content(prompt)
         return response.text
         
@@ -98,8 +117,6 @@ with col2:
         else:
             with st.spinner('DexApt sunuculara bağlanıyor...'):
                 result = get_ai_response(user_comment, brand_persona, api_key)
-                
-                # Eğer hata mesajı geldiyse kırmızı göster
                 if "Hata oluştu" in result:
                     st.error(result)
                 else:
