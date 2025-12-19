@@ -55,7 +55,7 @@ def get_ai_response(comment, persona, key):
         genai.configure(api_key=key)
         
         # İŞTE BURASI! Senin listendeki çalışan modeli yazdık.
-        model = genai.GenerativeModel('models/gemini-2.0-flash')
+        model = genai.GenerativeModel('models/gemini-flash-latest')
         
         prompt = f"""
         Sen DexApt Kriz Yönetimi Uzmanısın.
