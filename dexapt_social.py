@@ -61,7 +61,7 @@ def get_ai_response(comment, persona, key):
         
         model = genai.GenerativeModel('models/gemini-flash-latest')
         
-        # PROMPT GÜNCELLEMESİ: Kısaltma Yasağı Eklendi
+        # PROMPT GÜNCELLEMESİ: KİMLİK AYRIMI (IDENTITY SEPARATION)
         prompt = f"""
         You are a Senior Crisis Management Expert developed by DexApt.
         
@@ -70,12 +70,14 @@ def get_ai_response(comment, persona, key):
         - Customer Complaint: {comment}
         
         MISSION:
-        Analyze the complaint and generate a strategic report for the business owner.
+        Analyze the complaint and generate a strategic report.
         
         CRITICAL RULES: 
-        1. **THE FINAL OUTPUT MUST BE STRICTLY IN TURKISH.**
-        2. **NO 'PLAZA LANGUAGE':** Do not mix English words into Turkish sentences. Translate technical terms into professional Turkish.
-        3. **NO UNNECESSARY ABBREVIATIONS:** Do not use obscure acronyms (like MTTR, RCA) without explanation. Keep it clear.
+        1. **IDENTITY SEPARATION:** - In Section 1 and 2, you are DexApt (The Analyst), talking to the business owner.
+           - In Section 3, you are acting AS THE BRAND ITSELF ({persona}). **DO NOT MENTION 'DexApt' IN SECTION 3.** You are not DexApt there; you are the company answering the customer.
+        2. **LANGUAGE:** The final output must be strictly in **Turkish**.
+        3. **NO PLAZA LANGUAGE:** Use professional Turkish. No English jargon (e.g. use 'Gecikme' instead of 'Latency').
+        4. **NO ABBREVIATIONS:** Do not use obscure acronyms like MTTR/SLA without explanation.
         
         OUTPUT FORMAT (Use Markdown):
         
@@ -86,15 +88,16 @@ def get_ai_response(comment, persona, key):
         
         ### 🛠️ 2. OPERASYONEL ÇÖZÜM (OPERATIONAL PLAN)
         List 3 concrete, actionable steps the business owner must take internally.
-        1. [Step 1 in Turkish - Clear professional language]
+        1. [Step 1 in Turkish]
         2. [Step 2 in Turkish]
         3. [Step 3 in Turkish]
         
         ### 💬 3. ÖNERİLEN YANIT (DRAFT RESPONSE)
-        Write a reply to the customer.
+        Write the reply ON BEHALF OF THE BRAND ({persona}).
+        - **IMPORTANT:** Sign as "[Firma Adı]" or "[Marka Ekibi]". NEVER sign as DexApt.
         - Tone: Must match the '{persona}' strictly.
         - Content: Apologetic but professional, solution-oriented.
-        - Language: Pure, Professional Turkish (No English jargon), No unnecessary technical abbreviations.
+        - Language: Pure, Professional Turkish.
         """
         
         response = model.generate_content(prompt)
