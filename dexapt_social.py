@@ -20,17 +20,24 @@ with st.sidebar:
         
     st.markdown("---")
     
-    brand_persona = st.selectbox(
+    # --- AKILLI PERSONA SİSTEMİ (VİTRİN TÜRKÇE, DEPO İNGİLİZCE) ---
+    persona_map = {
+        "Zincir Restoran (Kurumsal ama Samimi)": "Chain Restaurant (Corporate but Friendly, Welcoming, sincere)",
+        "Lüks Giyim Markası (Mesafeli ve Seçkin)": "Luxury Fashion Brand (High-end, Exclusive, Professional, Distant and Elite)",
+        "Teknoloji/SaaS Firması (Çözüm Odaklı & Teknik)": "Tech/SaaS Company (Solution Oriented, Technical, Analytical, Geeky)",
+        "Hava Yolu Şirketi (Otoriter & Güven Verici)": "Airline Company (Authoritative, Trustworthy, Formal, Serious and Safe)"
+    }
+    
+    # Ekranda sadece Türkçe anahtarlar (Keys) görünür
+    selected_option = st.selectbox(
         "Marka Sektörü & Dili:",
-        (
-            "Zincir Restoran (Kurumsal ama Samimi)",
-            "Lüks Giyim Markası (Mesafeli ve Seçkin)",
-            "Teknoloji/SaaS Firması (Çözüm Odaklı & Teknik)",
-            "Hava Yolu Şirketi (Otoriter & Güven Verici)"
-        )
+        options=list(persona_map.keys())
     )
     
-    st.info("Model: Gemini Flash Latest Version")
+    # Arka planda İngilizce karşılığı (Value) seçilir
+    brand_persona = persona_map[selected_option]
+      
+    st.info(f"Model: Gemini Flash Latest Version")
 
 # --- ANA EKRAN ---
 st.title("🛡️ DexApt: Sosyal Medya Kriz Analisti")
