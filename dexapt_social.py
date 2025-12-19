@@ -30,7 +30,7 @@ with st.sidebar:
         )
     )
     
-    st.info("Model: Gemini 2.0 Flash ⚡")
+    st.info("Model: Gemini Flash Latest Version")
 
 # --- ANA EKRAN ---
 st.title("🛡️ DexApt: Sosyal Medya Kriz Analisti")
@@ -58,27 +58,36 @@ def get_ai_response(comment, persona, key):
         model = genai.GenerativeModel('models/gemini-flash-latest')
         
         prompt = f"""
-        Sen DexApt Kriz Yönetimi Uzmanısın.
+        You are a Senior Crisis Management Expert developed by DexApt.
         
-        DURUM:
-        Marka Tipi: {persona}
-        Müşteri Şikayeti: {comment}
+        INPUT DATA:
+        - Brand Persona: {persona}
+        - Customer Complaint: {comment}
         
-        GÖREV:
-        Aşağıdaki formatta bir rapor hazırla (Markdown kullan):
+        MISSION:
+        Analyze the complaint and generate a strategic report for the business owner.
         
-        ### 📊 1. RİSK ANALİZİ
-        * **Öfke Skoru:** [1-10 Arası Puan] / 10
-        * **Tespit:** [Kısa durum özeti]
+        CRITICAL RULE: 
+        Even though these instructions are in English, **THE FINAL OUTPUT MUST BE STRICTLY IN TURKISH.**
         
-        ### 🛠️ 2. OPERASYONEL ÇÖZÜM (Yöneticiye)
-        İşletme sahibinin yapması gereken 3 adım:
-        1. ...
-        2. ...
-        3. ...
+        OUTPUT FORMAT (Use Markdown):
         
-        ### 💬 3. ÖNERİLEN YANIT (Müşteriye)
-        Marka diline ({persona}) uygun, nazik ve çözüm odaklı yanıt metni.
+        ### 📊 1. RİSK ANALİZİ (RISK ANALYSIS)
+        * **Öfke Skoru (Anger Score):** [Score between 1-10] / 10
+        * **Tespit (Detection):** [Briefly explain the root cause and the customer's sentiment in Turkish]
+        * **Risk Durumu:** [Is this a viral risk? High/Medium/Low?]
+        
+        ### 🛠️ 2. OPERASYONEL ÇÖZÜM (OPERATIONAL PLAN)
+        List 3 concrete, actionable steps the business owner must take internally to fix this issue forever.
+        1. [Step 1 in Turkish]
+        2. [Step 2 in Turkish]
+        3. [Step 3 in Turkish]
+        
+        ### 💬 3. ÖNERİLEN YANIT (DRAFT RESPONSE)
+        Write a reply to the customer.
+        - Tone: Must match the '{persona}' strictly.
+        - Content: Apologetic but professional, solution-oriented.
+        - Language: Turkish.
         """
         
         response = model.generate_content(prompt)
