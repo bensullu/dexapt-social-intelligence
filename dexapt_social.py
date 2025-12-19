@@ -63,7 +63,7 @@ with st.sidebar:
     st.info(f"Model: Gemini Flash Latest ⚡")
 
 # --- ANA EKRAN ---
-st.title(f" {"pp.png"} DexApt: Sosyal Medya Kriz Analisti")
+st.title("🛡️ DexApt: Sosyal Medya Kriz Analisti")
 st.markdown("Müşteri mesajını analiz eder, **risk skorunu** belirler ve **operasyonel çözüm planı** sunar.")
 st.markdown("---")
 
