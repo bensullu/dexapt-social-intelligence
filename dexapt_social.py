@@ -21,23 +21,22 @@ with st.sidebar:
     st.markdown("---")
     
     # --- AKILLI PERSONA SİSTEMİ (VİTRİN TÜRKÇE, DEPO İNGİLİZCE) ---
+    # GÜNCELLEME: "Geeky" ifadesini kaldırdık, "Professional" ekledik.
     persona_map = {
         "Zincir Restoran (Kurumsal ama Samimi)": "Chain Restaurant (Corporate but Friendly, Welcoming, sincere)",
         "Lüks Giyim Markası (Mesafeli ve Seçkin)": "Luxury Fashion Brand (High-end, Exclusive, Professional, Distant and Elite)",
-        "Teknoloji/SaaS Firması (Çözüm Odaklı & Teknik)": "Tech/SaaS Company (Solution Oriented, Technical, Analytical, Geeky)",
+        "Teknoloji/SaaS Firması (Çözüm Odaklı & Teknik)": "Tech/SaaS Company (Solution Oriented, Technical, Analytical, Professional)",
         "Hava Yolu Şirketi (Otoriter & Güven Verici)": "Airline Company (Authoritative, Trustworthy, Formal, Serious and Safe)"
     }
     
-    # Ekranda sadece Türkçe anahtarlar (Keys) görünür
     selected_option = st.selectbox(
         "Marka Sektörü & Dili:",
         options=list(persona_map.keys())
     )
     
-    # Arka planda İngilizce karşılığı (Value) seçilir
     brand_persona = persona_map[selected_option]
-      
-    st.info(f"Model: Gemini Flash Latest Version")
+    
+    st.info(f"Model: Gemini Flash Latest ⚡")
 
 # --- ANA EKRAN ---
 st.title("🛡️ DexApt: Sosyal Medya Kriz Analisti")
@@ -61,9 +60,9 @@ def get_ai_response(comment, persona, key):
     try:
         genai.configure(api_key=key)
         
-        # İŞTE BURASI! Senin listendeki çalışan modeli yazdık.
         model = genai.GenerativeModel('models/gemini-flash-latest')
         
+        # PROMPT GÜNCELLEMESİ: Plaza Dili Yasağı Eklendi
         prompt = f"""
         You are a Senior Crisis Management Expert developed by DexApt.
         
@@ -74,8 +73,9 @@ def get_ai_response(comment, persona, key):
         MISSION:
         Analyze the complaint and generate a strategic report for the business owner.
         
-        CRITICAL RULE: 
-        Even though these instructions are in English, **THE FINAL OUTPUT MUST BE STRICTLY IN TURKISH.**
+        CRITICAL RULES: 
+        1. **THE FINAL OUTPUT MUST BE STRICTLY IN TURKISH.**
+        2. **NO 'PLAZA LANGUAGE':** Do not mix English words into Turkish sentences (e.g., do NOT use words like 'Latency', 'Bottleneck', 'Uplink', 'Post-purchase' inside the Turkish text). Translate technical terms into professional Turkish (e.g., use 'Gecikme' instead of 'Latency').
         
         OUTPUT FORMAT (Use Markdown):
         
@@ -85,8 +85,8 @@ def get_ai_response(comment, persona, key):
         * **Risk Durumu:** [Is this a viral risk? High/Medium/Low?]
         
         ### 🛠️ 2. OPERASYONEL ÇÖZÜM (OPERATIONAL PLAN)
-        List 3 concrete, actionable steps the business owner must take internally to fix this issue forever.
-        1. [Step 1 in Turkish]
+        List 3 concrete, actionable steps the business owner must take internally.
+        1. [Step 1 in Turkish - Use technical concepts but Turkish names]
         2. [Step 2 in Turkish]
         3. [Step 3 in Turkish]
         
@@ -94,7 +94,7 @@ def get_ai_response(comment, persona, key):
         Write a reply to the customer.
         - Tone: Must match the '{persona}' strictly.
         - Content: Apologetic but professional, solution-oriented.
-        - Language: Turkish.
+        - Language: Pure, Professional Turkish (No English jargon).
         """
         
         response = model.generate_content(prompt)
