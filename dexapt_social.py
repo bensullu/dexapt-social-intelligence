@@ -4,7 +4,7 @@ import os
 
 LOGO_URL = "https://media.licdn.com/dms/image/v2/D4D0BAQHoz_rIDsxi-g/company-logo_100_100/B4DZsjtD8ZJIAQ-/0/1765830574855/dexapt_logo?e=1767830400&v=beta&t=jezcuAIDhug0xmmGJb-FTX5K8PJf6B3Zq7XHn3J_NUQ"
 # --- SAYFA AYARLARI ---
-st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon=LOGO_URL, layout="wide")
+st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon="🛡️", layout="wide")
 
 # --- YAN MENÜ ---
 with st.sidebar:
