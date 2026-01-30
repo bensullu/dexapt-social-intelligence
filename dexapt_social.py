@@ -151,13 +151,21 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
         3. Write the recommended response IN THE SAME LANGUAGE as the complaint.
         
         CRITICAL RULES:
-        1. AUTOMATIC LANGUAGE DETECTION:
-           - First, detect the language of the customer complaint.
-           - The recommended response in Section 3 MUST be written in the SAME language as the complaint.
-           - If complaint is in Turkish → respond in Turkish
-           - If complaint is in English → respond in English
-           - If complaint is in German → respond in German
-           - And so on for any language.
+        1. AUTOMATIC LANGUAGE DETECTION (MOST IMPORTANT RULE):
+           - First, detect the language of the customer message (complaint, review, or feedback).
+           - The recommended response in Section 3 MUST be written ENTIRELY in the DETECTED language.
+           - THIS IS MANDATORY - DO NOT write the response in any other language.
+           - Examples:
+             * If message is in Polish → response MUST be in Polish
+             * If message is in Turkish → response MUST be in Turkish
+             * If message is in English → response MUST be in English
+             * If message is in German → response MUST be in German
+             * If message is in French → response MUST be in French
+             * If message is in Spanish → response MUST be in Spanish
+             * If message is in Czech → response MUST be in Czech
+             * If message is in Arabic → response MUST be in Arabic
+             * And so on for ANY language detected.
+           - NEVER translate the response to a different language. Keep it in the original message language.
         
         2. IDENTITY SEPARATION:
            - In Section 1 and 2, you are DexApt (The Analyst), talking to the business owner (always in English).
