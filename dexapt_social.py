@@ -134,7 +134,7 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
         
         model = genai.GenerativeModel('models/gemini-flash-latest')
         
-        # PROMPT: PLATFORM-BASED + IDENTITY SEPARATION
+        # PROMPT: PLATFORM-BASED + AUTO LANGUAGE DETECTION
         prompt = f"""
         You are a Senior Crisis Management Expert developed by DexApt.
         
@@ -146,15 +146,25 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
         - Max Characters for Response: {platform_info['max_chars']}
         
         MISSION:
-        Analyze the complaint and generate a strategic report with a PLATFORM-SPECIFIC response.
+        1. DETECT the language of the customer complaint.
+        2. Analyze the complaint and generate a strategic report.
+        3. Write the recommended response IN THE SAME LANGUAGE as the complaint.
         
         CRITICAL RULES:
-        1. IDENTITY SEPARATION:
-           - In Section 1 and 2, you are DexApt (The Analyst), talking to the business owner.
-           - In Section 3, you are acting AS THE BRAND ITSELF ({persona}). 
-           - DO NOT MENTION 'DexApt' IN SECTION 3. You are not DexApt there; you are the company answering the customer.
+        1. AUTOMATIC LANGUAGE DETECTION:
+           - First, detect the language of the customer complaint.
+           - The recommended response in Section 3 MUST be written in the SAME language as the complaint.
+           - If complaint is in Turkish → respond in Turkish
+           - If complaint is in English → respond in English
+           - If complaint is in German → respond in German
+           - And so on for any language.
         
-        2. PLATFORM-SPECIFIC RESPONSE:
+        2. IDENTITY SEPARATION:
+           - In Section 1 and 2, you are DexApt (The Analyst), talking to the business owner (always in English).
+           - In Section 3, you are acting AS THE BRAND ITSELF ({persona}). 
+           - DO NOT MENTION 'DexApt' IN SECTION 3. You are the company answering the customer.
+        
+        3. PLATFORM-SPECIFIC RESPONSE:
            The response in Section 3 MUST be tailored for {platform_name}:
            - Style: {platform_info['style']}
            - Character Limit: Stay under {platform_info['max_chars']} characters
@@ -164,38 +174,38 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
            - Facebook: Be detailed, explanatory, and community-focused
            - Google Reviews: Be polite, solution-focused, and reputation-aware
         
-        3. LANGUAGE:
-           - The final output must be strictly in Turkish.
-           - Use professional Turkish without English jargon.
-           - Example: Use 'Gecikme' instead of 'Latency'.
-        
         4. NO ABBREVIATIONS:
            - Do not use obscure acronyms like MTTR/SLA without explanation.
         
         OUTPUT FORMAT (Use Markdown):
         
+        ### 🌍 0. LANGUAGE DETECTION
+        * **Detected Language:** [Language name, e.g., Turkish, English, German, French, etc.]
+        * **Confidence:** [High/Medium/Low]
+        
         ### 📊 1. RISK ANALYSIS
         * **Anger Score:** [Score between 1-10] / 10
-        * **Detection:** [Briefly explain the root cause and the customer's sentiment in Turkish]
+        * **Detection:** [Briefly explain the root cause and the customer's sentiment]
         * **Risk Status:** [Is this a viral risk? High/Medium/Low?]
         * **Platform Risk Note:** [Specifically for {platform_name}, what is the viral/reputation risk?]
         
         ### 🛠️ 2. OPERATIONAL SOLUTION
         List 3 concrete, actionable steps the business owner must take internally.
-        1. [Step 1 in Turkish]
-        2. [Step 2 in Turkish]
-        3. [Step 3 in Turkish]
+        1. [Step 1]
+        2. [Step 2]
+        3. [Step 3]
         
         ### 💬 3. RECOMMENDED RESPONSE FOR {platform_name.upper()}
         Write a response specifically formatted for {platform_name}.
-        - IMPORTANT: Sign as "[Company Name]" or "[Brand Team]". NEVER sign as DexApt.
+        - CRITICAL: Write this response in the DETECTED LANGUAGE from Section 0.
+        - Sign as "[Company Name]" or "[Brand Team]". NEVER sign as DexApt.
         - Tone: Must match both the '{persona}' AND the {platform_name} platform culture.
         - Style: {platform_info['style']}
         - Max Length: {platform_info['max_chars']} characters
         - Content: Apologetic but professional, solution-oriented.
-        - Language: Pure, Professional Turkish.
         
         ### 📏 4. RESPONSE CHARACTERISTICS
+        * **Response Language:** [Same as detected language]
         * **Character Count:** [Exact character count of the response in Section 3]
         * **Platform Compliance:** [Is the response appropriate for {platform_name}? Yes/No with brief explanation]
         """
