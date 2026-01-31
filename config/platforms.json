@@ -1,0 +1,82 @@
+{
+    "twitter": {
+        "id": "twitter",
+        "name": "Twitter/X",
+        "icon": "🐦",
+        "max_chars": 280,
+        "tone_tr": "Kısa, öz ve direkt. Hashtag kullanımı uygun. Emoji ile desteklenebilir.",
+        "tone_en": "Short, concise and direct. Hashtags allowed. Emoji-friendly.",
+        "style": "Concise, punchy, use 1-2 relevant hashtags, max 280 chars, emoji-friendly",
+        "guidelines": [
+            "Keep response under 280 characters",
+            "Use 1-2 relevant hashtags",
+            "Be punchy and direct",
+            "Emojis are acceptable",
+            "No lengthy explanations"
+        ]
+    },
+    "instagram": {
+        "id": "instagram",
+        "name": "Instagram",
+        "icon": "📸",
+        "max_chars": 2200,
+        "tone_tr": "Samimi, sıcak ve görsel odaklı. Emoji kullanımı yoğun.",
+        "tone_en": "Warm, friendly and visual-focused. Heavy emoji usage.",
+        "style": "Warm, friendly, emoji-rich, visually descriptive, can be longer and more personal",
+        "guidelines": [
+            "Use emojis generously",
+            "Be warm and personal",
+            "Can be more detailed than Twitter",
+            "Maintain visual-friendly language",
+            "Show genuine care"
+        ]
+    },
+    "facebook": {
+        "id": "facebook",
+        "name": "Facebook",
+        "icon": "👥",
+        "max_chars": 8000,
+        "tone_tr": "Detaylı, açıklayıcı ve topluluk odaklı. Resmi ama samimi.",
+        "tone_en": "Detailed, explanatory and community-focused. Formal yet warm.",
+        "style": "Detailed, explanatory, community-focused, formal yet warm, can include full context",
+        "guidelines": [
+            "Provide detailed explanations",
+            "Address the community aspect",
+            "Be thorough in your response",
+            "Maintain professional warmth",
+            "Can include full context and solutions"
+        ]
+    },
+    "linkedin": {
+        "id": "linkedin",
+        "name": "LinkedIn",
+        "icon": "💼",
+        "max_chars": 3000,
+        "tone_tr": "Profesyonel, kurumsal ve çözüm odaklı. İş dili kullanımı.",
+        "tone_en": "Professional, corporate and solution-oriented. Business language.",
+        "style": "Professional, corporate, solution-oriented, business language, thought-leadership tone",
+        "guidelines": [
+            "Use professional business language",
+            "Focus on solutions and improvements",
+            "Maintain corporate image",
+            "Show thought leadership",
+            "Avoid casual expressions"
+        ]
+    },
+    "google_reviews": {
+        "id": "google_reviews",
+        "name": "Google Reviews",
+        "icon": "⭐",
+        "max_chars": 4000,
+        "tone_tr": "Nazik, çözüm sunan ve SEO dostu. Anahtar kelime içerebilir.",
+        "tone_en": "Polite, solution-offering and SEO-friendly. May include keywords.",
+        "style": "Polite, solution-offering, SEO-friendly, keyword-aware, reputation-focused",
+        "guidelines": [
+            "Be polite and appreciative",
+            "Offer concrete solutions",
+            "Include relevant keywords naturally",
+            "Focus on reputation management",
+            "Invite customer to return"
+        ]
+    }
+}
