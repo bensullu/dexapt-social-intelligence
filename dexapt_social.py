@@ -162,7 +162,7 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
     try:
         genai.configure(api_key=key)
         
-        model = genai.GenerativeModel('models/gemini-2.0-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash-latest')
         
         # Build platform guidelines string
         guidelines = platform_info.get('guidelines', [])
