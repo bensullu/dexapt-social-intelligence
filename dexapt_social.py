@@ -107,6 +107,32 @@ with st.sidebar:
         st.success("✅ System Connected (Auto)")
     else:
         api_key = st.text_input("Google API Key:", type="password", placeholder="AIzaSy...")
+    
+    # --- MODEL SELECTION ---
+    available_models = [
+        "models/gemini-2.0-flash",
+        "models/gemini-2.5-flash",
+        "models/gemini-2.5-pro",
+        "models/gemini-2.0-flash-lite",
+        "models/gemini-flash-latest",
+        "models/gemini-pro-latest"
+    ]
+    
+    selected_model = st.selectbox(
+        "🤖 AI Model:",
+        options=available_models,
+        index=0
+    )
+    
+    # List models button (debug)
+    if api_key and st.button("🔍 List Available Models"):
+        try:
+            genai.configure(api_key=api_key)
+            models = genai.list_models()
+            model_names = [m.name for m in models if 'generateContent' in str(m.supported_generation_methods)]
+            st.code("\n".join(model_names))
+        except Exception as e:
+            st.error(f"Error: {e}")
         
     st.markdown("---")
     
@@ -155,14 +181,14 @@ with col1:
     analyze_btn = st.button("START RISK & STRATEGY ANALYSIS", type="primary")
 
 # --- GOOGLE AI FUNCTION ---
-def get_ai_response(comment, persona, key, platform_name, platform_info):
+def get_ai_response(comment, persona, key, platform_name, platform_info, model_name):
     if not key:
         return "⚠️ Please enter your API Key."
     
     try:
         genai.configure(api_key=key)
         
-        model = genai.GenerativeModel('models/gemini-1.5-flash')
+        model = genai.GenerativeModel(model_name)
         
         # Build platform guidelines string
         guidelines = platform_info.get('guidelines', [])
@@ -261,7 +287,7 @@ with col2:
             st.error("⚠️ API Key is missing!")
         else:
             with st.spinner('DexApt connecting to servers...'):
-                result = get_ai_response(user_comment, brand_persona, api_key, selected_platform_name, platform_info)
+                result = get_ai_response(user_comment, brand_persona, api_key, selected_platform_name, platform_info, selected_model)
                 if "Error occurred" in result:
                     st.error(result)
                 else:
