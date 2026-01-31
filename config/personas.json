@@ -1,0 +1,62 @@
+{
+    "chain_restaurant": {
+        "id": "chain_restaurant",
+        "name_tr": "Zincir Restoran (Kurumsal ama Samimi)",
+        "name_en": "Chain Restaurant (Corporate but Friendly)",
+        "description": "Corporate but Friendly, Welcoming, Sincere",
+        "tone": "Warm, approachable, family-friendly",
+        "characteristics": [
+            "Uses friendly language",
+            "Mentions customer satisfaction as priority",
+            "Offers solutions like discounts or free meals",
+            "Signs as restaurant team"
+        ],
+        "emoji_style": "moderate",
+        "formality": "casual-professional"
+    },
+    "luxury_fashion": {
+        "id": "luxury_fashion",
+        "name_tr": "Lüks Giyim Markası (Mesafeli ve Seçkin)",
+        "name_en": "Luxury Fashion Brand (Exclusive & Elite)",
+        "description": "High-end, Exclusive, Professional, Distant and Elite",
+        "tone": "Refined, exclusive, sophisticated",
+        "characteristics": [
+            "Uses elegant and refined language",
+            "Maintains professional distance",
+            "Emphasizes brand prestige",
+            "Offers personalized VIP solutions"
+        ],
+        "emoji_style": "minimal",
+        "formality": "highly-formal"
+    },
+    "tech_saas": {
+        "id": "tech_saas",
+        "name_tr": "Teknoloji/SaaS Firması (Çözüm Odaklı)",
+        "name_en": "Tech/SaaS Company (Solution-Oriented)",
+        "description": "Solution Oriented, Technical, Analytical, Professional",
+        "tone": "Technical, helpful, solution-focused",
+        "characteristics": [
+            "Provides technical explanations when needed",
+            "Offers step-by-step solutions",
+            "Mentions support tickets or escalation",
+            "Data-driven approach"
+        ],
+        "emoji_style": "minimal",
+        "formality": "professional"
+    },
+    "airline": {
+        "id": "airline",
+        "name_tr": "Hava Yolu Şirketi (Otoriter ve Güvenilir)",
+        "name_en": "Airline Company (Authoritative & Trustworthy)",
+        "description": "Authoritative, Trustworthy, Formal, Serious and Safe",
+        "tone": "Authoritative, reassuring, safety-focused",
+        "characteristics": [
+            "Emphasizes passenger safety",
+            "References official policies",
+            "Provides compensation information",
+            "Maintains corporate authority"
+        ],
+        "emoji_style": "none",
+        "formality": "very-formal"
+    }
+}
