@@ -1,8 +1,73 @@
 import streamlit as st
 import google.generativeai as genai
+import json
 import os
 
-LOGO_URL = ""
+# --- LOAD CONFIGURATION FILES ---
+def load_config():
+    """Load personas and platforms from config files"""
+    config_dir = os.path.join(os.path.dirname(__file__), 'config')
+    
+    # Load personas
+    personas_path = os.path.join(config_dir, 'personas.json')
+    try:
+        with open(personas_path, 'r', encoding='utf-8') as f:
+            personas = json.load(f)
+    except FileNotFoundError:
+        personas = get_default_personas()
+    
+    # Load platforms
+    platforms_path = os.path.join(config_dir, 'platforms.json')
+    try:
+        with open(platforms_path, 'r', encoding='utf-8') as f:
+            platforms = json.load(f)
+    except FileNotFoundError:
+        platforms = get_default_platforms()
+    
+    # Load prompt rules
+    rules_path = os.path.join(config_dir, 'prompt_rules.md')
+    try:
+        with open(rules_path, 'r', encoding='utf-8') as f:
+            prompt_rules = f.read()
+    except FileNotFoundError:
+        prompt_rules = ""
+    
+    return personas, platforms, prompt_rules
+
+def get_default_personas():
+    """Fallback personas if config file not found"""
+    return {
+        "chain_restaurant": {
+            "name_en": "Chain Restaurant (Corporate but Friendly)",
+            "description": "Corporate but Friendly, Welcoming, Sincere"
+        },
+        "luxury_fashion": {
+            "name_en": "Luxury Fashion Brand (Exclusive & Elite)",
+            "description": "High-end, Exclusive, Professional, Distant and Elite"
+        },
+        "tech_saas": {
+            "name_en": "Tech/SaaS Company (Solution-Oriented)",
+            "description": "Solution Oriented, Technical, Analytical, Professional"
+        },
+        "airline": {
+            "name_en": "Airline Company (Authoritative & Trustworthy)",
+            "description": "Authoritative, Trustworthy, Formal, Serious and Safe"
+        }
+    }
+
+def get_default_platforms():
+    """Fallback platforms if config file not found"""
+    return {
+        "twitter": {"name": "Twitter/X", "icon": "🐦", "max_chars": 280, "style": "Concise, punchy"},
+        "instagram": {"name": "Instagram", "icon": "�", "max_chars": 2200, "style": "Warm, emoji-rich"},
+        "facebook": {"name": "Facebook", "icon": "👥", "max_chars": 8000, "style": "Detailed, community-focused"},
+        "linkedin": {"name": "LinkedIn", "icon": "💼", "max_chars": 3000, "style": "Professional, corporate"},
+        "google_reviews": {"name": "Google Reviews", "icon": "⭐", "max_chars": 4000, "style": "Polite, SEO-friendly"}
+    }
+
+# Load configurations
+PERSONAS, PLATFORMS, PROMPT_RULES = load_config()
+
 # --- PAGE CONFIGURATION ---
 st.set_page_config(page_title="DexApt | Crisis Intelligence", page_icon="pp.png", layout="wide")
 
@@ -12,7 +77,7 @@ st.markdown(
     /* Sidebar Background: Modern Dark Anthracite */
     [data-testid="stSidebar"] {
         background-color: #1A1C24;
-        border-right: 1px solid #2D2F3B; /* Subtle separator line */
+        border-right: 1px solid #2D2F3B;
     }
     /* Sidebar Text Colors */
     [data-testid="stSidebar"] .css-1d391kg {
@@ -45,67 +110,32 @@ with st.sidebar:
         
     st.markdown("---")
     
-    # --- SMART PERSONA SYSTEM ---
-    persona_map = {
-        "Chain Restaurant (Corporate but Friendly)": "Chain Restaurant (Corporate but Friendly, Welcoming, Sincere)",
-        "Luxury Fashion Brand (Exclusive & Elite)": "Luxury Fashion Brand (High-end, Exclusive, Professional, Distant and Elite)",
-        "Tech/SaaS Company (Solution-Oriented)": "Tech/SaaS Company (Solution Oriented, Technical, Analytical, Professional)",
-        "Airline Company (Authoritative & Trustworthy)": "Airline Company (Authoritative, Trustworthy, Formal, Serious and Safe)"
-    }
+    # --- PERSONA SELECTION (from config) ---
+    persona_options = {p["name_en"]: p["description"] for p in PERSONAS.values()}
     
-    selected_option = st.selectbox(
+    selected_persona_name = st.selectbox(
         "Brand Sector & Tone:",
-        options=list(persona_map.keys())
+        options=list(persona_options.keys())
     )
     
-    brand_persona = persona_map[selected_option]
+    brand_persona = persona_options[selected_persona_name]
     
     st.markdown("---")
     
-    # --- PLATFORM-BASED RESPONSE SYSTEM ---
-    platform_map = {
-        "Twitter/X": {
-            "icon": "🐦",
-            "max_chars": 280,
-            "tone": "Short, concise and direct. Hashtags allowed. Emoji-friendly.",
-            "style": "Concise, punchy, use 1-2 relevant hashtags, max 280 chars, emoji-friendly"
-        },
-        "Instagram": {
-            "icon": "📸",
-            "max_chars": 2200,
-            "tone": "Warm, friendly and visual-focused. Heavy emoji usage.",
-            "style": "Warm, friendly, emoji-rich, visually descriptive, can be longer and more personal"
-        },
-        "Facebook": {
-            "icon": "👥",
-            "max_chars": 8000,
-            "tone": "Detailed, explanatory and community-focused. Formal yet warm.",
-            "style": "Detailed, explanatory, community-focused, formal yet warm, can include full context"
-        },
-        "LinkedIn": {
-            "icon": "💼",
-            "max_chars": 3000,
-            "tone": "Professional, corporate and solution-oriented. Business language.",
-            "style": "Professional, corporate, solution-oriented, business language, thought-leadership tone"
-        },
-        "Google Reviews": {
-            "icon": "⭐",
-            "max_chars": 4000,
-            "tone": "Polite, solution-offering and SEO-friendly. May include keywords.",
-            "style": "Polite, solution-offering, SEO-friendly, keyword-aware, reputation-focused"
-        }
-    }
+    # --- PLATFORM SELECTION (from config) ---
+    platform_options = {p["name"]: key for key, p in PLATFORMS.items()}
     
-    selected_platform = st.selectbox(
+    selected_platform_name = st.selectbox(
         "📱 Target Platform:",
-        options=list(platform_map.keys()),
-        format_func=lambda x: f"{platform_map[x]['icon']} {x}"
+        options=list(platform_options.keys()),
+        format_func=lambda x: f"{PLATFORMS[platform_options[x]]['icon']} {x}"
     )
     
-    platform_info = platform_map[selected_platform]
+    platform_key = platform_options[selected_platform_name]
+    platform_info = PLATFORMS[platform_key]
     
     st.caption(f"📏 Max Characters: **{platform_info['max_chars']}**")
-    st.caption(f"🎯 Tone: {platform_info['tone']}")
+    st.caption(f"🎯 Tone: {platform_info.get('tone_en', platform_info.get('style', ''))}")
     
     st.markdown("---")
     st.info(f"Model: Gemini Flash Latest ⚡")
@@ -132,7 +162,11 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
     try:
         genai.configure(api_key=key)
         
-        model = genai.GenerativeModel('models/gemini-flash-latest')
+        model = genai.GenerativeModel('models/gemini-2.0-flash')
+        
+        # Build platform guidelines string
+        guidelines = platform_info.get('guidelines', [])
+        guidelines_str = "\n           ".join([f"- {g}" for g in guidelines])
         
         # PROMPT: PLATFORM-BASED + AUTO LANGUAGE DETECTION
         prompt = f"""
@@ -140,15 +174,17 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
         
         INPUT DATA:
         - Brand Persona: {persona}
-        - Customer Complaint: {comment}
+        - Customer Message: {comment}
         - Target Platform: {platform_name}
-        - Platform Style: {platform_info['style']}
-        - Max Characters for Response: {platform_info['max_chars']}
+        - Platform Style: {platform_info.get('style', '')}
+        - Max Characters for Response: {platform_info.get('max_chars', 280)}
+        - Platform Guidelines:
+           {guidelines_str}
         
         MISSION:
-        1. DETECT the language of the customer complaint.
-        2. Analyze the complaint and generate a strategic report.
-        3. Write the recommended response IN THE SAME LANGUAGE as the complaint.
+        1. DETECT the language of the customer message.
+        2. Analyze the message and generate a strategic report.
+        3. Write the recommended response IN THE SAME LANGUAGE as the message.
         
         CRITICAL RULES:
         1. AUTOMATIC LANGUAGE DETECTION (MOST IMPORTANT RULE):
@@ -162,43 +198,37 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
              * If message is in German → response MUST be in German
              * If message is in French → response MUST be in French
              * If message is in Spanish → response MUST be in Spanish
-             * If message is in Czech → response MUST be in Czech
-             * If message is in Arabic → response MUST be in Arabic
              * And so on for ANY language detected.
-           - NEVER translate the response to a different language. Keep it in the original message language.
+           - NEVER translate the response to a different language.
         
         2. IDENTITY SEPARATION:
-           - In Section 1 and 2, you are DexApt (The Analyst), talking to the business owner (always in English).
+           - In Section 1 and 2, you are DexApt (The Analyst), talking to the business owner.
            - In Section 3, you are acting AS THE BRAND ITSELF ({persona}). 
            - DO NOT MENTION 'DexApt' IN SECTION 3. You are the company answering the customer.
         
         3. PLATFORM-SPECIFIC RESPONSE:
            The response in Section 3 MUST be tailored for {platform_name}:
-           - Style: {platform_info['style']}
-           - Character Limit: Stay under {platform_info['max_chars']} characters
-           - Twitter/X: Use 1-2 hashtags, keep it punchy and concise
-           - Instagram: Use emojis generously, be warm and personal
-           - LinkedIn: Be professional, corporate, and thought-leadership focused
-           - Facebook: Be detailed, explanatory, and community-focused
-           - Google Reviews: Be polite, solution-focused, and reputation-aware
+           - Style: {platform_info.get('style', '')}
+           - Character Limit: Stay under {platform_info.get('max_chars', 280)} characters
+           - Follow platform guidelines strictly
         
         4. NO ABBREVIATIONS:
-           - Do not use obscure acronyms like MTTR/SLA without explanation.
+           - Do not use obscure acronyms without explanation.
         
         OUTPUT FORMAT (Use Markdown):
         
         ### 🌍 0. LANGUAGE DETECTION
-        * **Detected Language:** [Language name, e.g., Turkish, English, German, French, etc.]
+        * **Detected Language:** [Language name]
         * **Confidence:** [High/Medium/Low]
         
         ### 📊 1. RISK ANALYSIS
         * **Anger Score:** [Score between 1-10] / 10
-        * **Detection:** [Briefly explain the root cause and the customer's sentiment]
-        * **Risk Status:** [Is this a viral risk? High/Medium/Low?]
-        * **Platform Risk Note:** [Specifically for {platform_name}, what is the viral/reputation risk?]
+        * **Detection:** [Briefly explain the root cause and sentiment]
+        * **Risk Status:** [High/Medium/Low]
+        * **Platform Risk Note:** [Specifically for {platform_name}, what is the risk?]
         
         ### 🛠️ 2. OPERATIONAL SOLUTION
-        List 3 concrete, actionable steps the business owner must take internally.
+        List 3 concrete, actionable steps the business owner must take.
         1. [Step 1]
         2. [Step 2]
         3. [Step 3]
@@ -207,15 +237,13 @@ def get_ai_response(comment, persona, key, platform_name, platform_info):
         Write a response specifically formatted for {platform_name}.
         - CRITICAL: Write this response in the DETECTED LANGUAGE from Section 0.
         - Sign as "[Company Name]" or "[Brand Team]". NEVER sign as DexApt.
-        - Tone: Must match both the '{persona}' AND the {platform_name} platform culture.
-        - Style: {platform_info['style']}
-        - Max Length: {platform_info['max_chars']} characters
-        - Content: Apologetic but professional, solution-oriented.
+        - Tone: Must match the '{persona}' AND {platform_name} platform culture.
+        - Max Length: {platform_info.get('max_chars', 280)} characters
         
         ### 📏 4. RESPONSE CHARACTERISTICS
         * **Response Language:** [Same as detected language]
-        * **Character Count:** [Exact character count of the response in Section 3]
-        * **Platform Compliance:** [Is the response appropriate for {platform_name}? Yes/No with brief explanation]
+        * **Character Count:** [Exact character count]
+        * **Platform Compliance:** [Yes/No with brief explanation]
         """
         
         response = model.generate_content(prompt)
@@ -233,7 +261,7 @@ with col2:
             st.error("⚠️ API Key is missing!")
         else:
             with st.spinner('DexApt connecting to servers...'):
-                result = get_ai_response(user_comment, brand_persona, api_key, selected_platform, platform_info)
+                result = get_ai_response(user_comment, brand_persona, api_key, selected_platform_name, platform_info)
                 if "Error occurred" in result:
                     st.error(result)
                 else:
@@ -241,3 +269,6 @@ with col2:
                     st.success("Report completed.")
 
 st.markdown("---")
+
+# --- FOOTER ---
+st.caption("📁 Configuration files loaded from: config/personas.json, config/platforms.json")
