@@ -247,11 +247,11 @@ def get_ai_response(comment, persona, key, platform_name, platform_info, model_n
         * **Detected Language:** [Language name]
         * **Confidence:** [High/Medium/Low]
         
-        ### 📊 1. RISK ANALYSIS
-        * **Anger Score:** [Score between 1-10] / 10
-        * **Detection:** [Briefly explain the root cause and sentiment]
-        * **Risk Status:** [High/Medium/Low]
-        * **Platform Risk Note:** [Specifically for {platform_name}, what is the risk?]
+        ### 📊 1. SITUATION ASSESSMENT
+        * **Priority Level:** [Critical / High / Medium / Low]
+        * **Urgency Score:** [1-10] - where 10 requires immediate attention
+        * **Root Cause:** [Briefly explain the core issue and customer sentiment]
+        * **Platform Impact:** [Specifically for {platform_name}, what is the potential reach/impact?]
         
         ### 🛠️ 2. OPERATIONAL SOLUTION
         List 3 concrete, actionable steps the business owner must take.
