@@ -259,17 +259,42 @@ def get_ai_response(comment, persona, key, platform_name, platform_info, model_n
         2. [Step 2]
         3. [Step 3]
         
-        ### 💬 3. RECOMMENDED RESPONSE FOR {platform_name.upper()}
-        Write a response specifically formatted for {platform_name}.
-        - CRITICAL: Write this response in the DETECTED LANGUAGE from Section 0.
+        ### 💬 3. RESPONSE OPTIONS FOR {platform_name.upper()}
+        Provide THREE different response options with different tones. Each response must:
+        - Be written in the DETECTED LANGUAGE from Section 0
         - Sign as "[Company Name]" or "[Brand Team]". NEVER sign as DexApt.
-        - Tone: Must match the '{persona}' AND {platform_name} platform culture.
-        - Max Length: {platform_info.get('max_chars', 280)} characters
+        - Stay under {platform_info.get('max_chars', 280)} characters
+        - Follow {platform_name} platform culture
+        
+        #### 🟢 OPTION A: SOFT (Apologetic & Empathetic)
+        Maximum empathy, deep apology, customer-first approach. Use warm language.
+        
+        [Write the soft response here in detected language]
+        
+        ---
+        
+        #### 🟡 OPTION B: BALANCED (Professional & Neutral)
+        Professional acknowledgment, balanced tone, solution-focused.
+        
+        [Write the balanced response here in detected language]
+        
+        ---
+        
+        #### 🔴 OPTION C: FIRM (Assertive but Respectful)
+        Confident stance, references policies if needed, maintains professionalism.
+        
+        [Write the firm response here in detected language]
+        
+        ---
         
         ### 📏 4. RESPONSE CHARACTERISTICS
-        * **Response Language:** [Same as detected language]
-        * **Character Count:** [Exact character count]
-        * **Platform Compliance:** [Yes/No with brief explanation]
+        | Option | Tone | Character Count | Best For |
+        |--------|------|-----------------|----------|
+        | 🟢 A | Soft | [count] | High anger, loyal customers |
+        | 🟡 B | Balanced | [count] | Most situations |
+        | 🔴 C | Firm | [count] | Unreasonable demands, policy issues |
+        
+        * **Recommended Option:** [A/B/C] - [Brief reason why]
         """
         
         response = model.generate_content(prompt)
