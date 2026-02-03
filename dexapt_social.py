@@ -196,25 +196,18 @@ def get_ai_response(comment, persona, key, platform_name, platform_info, model_n
         guidelines_str = "\n           ".join([f"- {g}" for g in guidelines])
         
         if simplified:
-            # Simplified prompt for batch processing
-            prompt = f"""
-            Analyze this customer message briefly:
-            Message: {comment}
-            Brand: {persona}
-            Platform: {platform_name}
-            
-            Return ONLY a JSON object (no markdown, no explanation):
-            {{
-                "language": "detected language",
-                "priority": "Critical/High/Medium/Low",
-                "urgency_score": 1-10,
-                "root_cause": "brief explanation",
-                "response_soft": "soft response in detected language",
-                "response_balanced": "balanced response in detected language",
-                "response_firm": "firm response in detected language",
-                "recommended": "A/B/C"
-            }}
-            """
+            # Simplified prompt for batch processing - STRICT JSON
+            prompt = f"""You are analyzing a customer review. Respond with ONLY valid JSON, nothing else.
+
+Customer Message: "{comment}"
+Brand Type: {persona}
+Platform: {platform_name}
+
+IMPORTANT: Output ONLY a JSON object. No markdown, no code blocks, no explanation. Just pure JSON.
+
+{{"language": "Turkish", "priority": "High", "urgency_score": 7, "root_cause": "Customer complaint about service", "response_soft": "Değerli müşterimiz, geri bildiriminiz için teşekkür ederiz.", "response_balanced": "Sayın müşterimiz, konuyu inceliyoruz.", "response_firm": "Müşterimiz, durumu değerlendirdik.", "recommended": "B"}}
+
+Now analyze the actual message above and return JSON in the same format."""
         else:
             # Full prompt for single analysis
             prompt = f"""
@@ -327,14 +320,50 @@ def get_ai_response(comment, persona, key, platform_name, platform_info, model_n
 
 
 def parse_json_response(text):
-    """Parse JSON from AI response"""
+    """Parse JSON from AI response - enhanced version"""
+    if not text:
+        return None
+    
     try:
-        # Try to extract JSON from response
-        json_match = re.search(r'\{[^{}]*\}', text, re.DOTALL)
-        if json_match:
-            return json.loads(json_match.group())
+        # Method 1: Try direct JSON parse (if response is clean JSON)
+        return json.loads(text.strip())
     except:
         pass
+    
+    try:
+        # Method 2: Remove markdown code blocks
+        cleaned = text.strip()
+        if cleaned.startswith('```'):
+            # Remove ```json or ``` at start and ``` at end
+            lines = cleaned.split('\n')
+            if lines[0].startswith('```'):
+                lines = lines[1:]
+            if lines and lines[-1].strip() == '```':
+                lines = lines[:-1]
+            cleaned = '\n'.join(lines)
+        return json.loads(cleaned.strip())
+    except:
+        pass
+    
+    try:
+        # Method 3: Find JSON object with nested braces support
+        start = text.find('{')
+        if start != -1:
+            brace_count = 0
+            end = start
+            for i, char in enumerate(text[start:], start):
+                if char == '{':
+                    brace_count += 1
+                elif char == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        end = i + 1
+                        break
+            json_str = text[start:end]
+            return json.loads(json_str)
+    except:
+        pass
+    
     return None
 
 
