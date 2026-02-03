@@ -27,7 +27,7 @@
 
 | Feature | Description |
 |---------|-------------|
-| 🎯 **Risk Analysis** | Calculates anger score (1-10) and viral risk level |
+| 🎯 **Situation Assessment** | Determines priority level and urgency score |
 | 🌍 **Auto Language Detection** | Detects complaint language and responds in the same language |
 | 📱 **Platform-Specific Responses** | Tailored responses for Twitter, Instagram, Facebook, LinkedIn, Google Reviews |
 | 🏢 **Brand Personas** | Customizable tone for different industries (Restaurant, Fashion, Tech, Airline) |
@@ -117,7 +117,7 @@ DexApt automatically detects the language of incoming complaints and generates r
 * **Confidence:** High
 
 ### 📊 1. RISK ANALYSIS
-* **Anger Score:** 8/10
+* **Urgency Score:** 8/10
 * **Detection:** Customer frustrated due to 6 hours of no response
 * **Risk Status:** High - Potential viral threat
 * **Platform Risk Note:** Twitter amplifies negative sentiment quickly
