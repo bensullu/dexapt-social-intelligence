@@ -55,7 +55,7 @@ The AI must detect the language of the incoming message and respond in the SAME 
 * **Confidence:** [High/Medium/Low]
 
 ### 📊 1. RISK ANALYSIS
-* **Anger Score:** [1-10] / 10
+* **Urgency Score:** [1-10] - where 10 requires immediate attention
 * **Detection:** [Root cause analysis]
 * **Risk Status:** [High/Medium/Low]
 * **Platform Risk Note:** [Platform-specific risk]
